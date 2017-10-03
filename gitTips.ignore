@@ -1,0 +1,31 @@
+Shaun - Basic GITHUB Howto
+2017/10/02
+
+
+GENERAL WORK:
+	git status # shows if new files are detected
+	git add file1.py file2.py .... # add files to version tracking
+	git commit -m "My commit messege"  # commit localaly
+	git push origin master             # push online
+
+SHARING REMOTE:
+	(make directory local)
+	(navigate to that directory)
+	git clone https://github.com/sbow/udacity.git
+
+CREATING LOCAL:
+	(make local directory)
+	(change shell to that directory)
+	git init
+
+CREATING REMOTE:
+	(on github, create new repository, copy repository https)
+	git remote add origin https://github.com/billgates/my_repo.git
+	git remove -v # should see a push & pull path defined via https
+
+FIRST TIME ON COMPUTER:
+	git config --global user.name "Johnny Five"
+	git config --global user.email "bill@gates.com"
+	git config --global color.ui "auto"
+	git config --global core.editor "nano"
+
