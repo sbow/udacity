@@ -1,3 +1,7 @@
+# October 2 2017
+# Shaun Bowman - Udacity Course Notes - Aritificial Inteligence for Robotics -
+# Lesson 4 - Kalman Filteres
+
 # Gausian - location & measurement probililty distobution
 # new variance = sigmasquare = (1 / ( 1/sigmaSqLocation + 1/signmaSqmeasurement))
 # new mean = 1 / ( sigmaSqLoc + sigmaSqMeas ) * ( SigmaSqLoc*MeanMeas +

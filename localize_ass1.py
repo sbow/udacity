@@ -123,18 +123,18 @@ def show(p):
 # (within a tolerance of +/- 0.001 for each entry)
 
 #Trial
-colors = [['G','G','G'],
-          ['G','R','G'],
-          ['G','G','G']]
-measurements = ['R','G','G','R','R'] # note: 2nd R is sensorerror
-motions = [[0,0],[-1,0],[0,-1],[1,0],[0,1]]
+#colors = [['G','G','G'],
+#          ['G','R','G'],
+#          ['G','G','G']]
+#measurements = ['R','G','G','R','R'] # note: 2nd R is sensorerror
+#motions = [[0,0],[-1,0],[0,-1],[1,0],[0,1]]
 
-#colors = [['R','G','G','R','R'],
-#          ['R','R','G','R','R'],
-#          ['R','R','G','G','R'],
-#          ['R','R','R','R','R']]
-#measurements = ['G','G','G','G','G']
-#motions = [[0,0],[0,1],[1,0],[1,0],[0,1]]
+colors = [['R','G','G','R','R'],
+          ['R','R','G','R','R'],
+          ['R','R','G','G','R'],
+          ['R','R','R','R','R']]
+measurements = ['G','G','G','G','G']
+motions = [[0,0],[0,1],[1,0],[1,0],[0,1]]
 
 p = localize(colors,measurements,motions,sensor_right = 0.7, p_move = 0.8)
 show(p) # displays your answer

@@ -1,12 +1,12 @@
 Shaun - Basic GITHUB Howto
 2017/10/02
 
-
 GENERAL WORK:
 	git status # shows if new files are detected
 	git add file1.py file2.py .... # add files to version tracking
 	git commit -m "My commit messege"  # commit localaly
 	git push origin master             # push online
+	git pull origin master		   # pull from online
 
 SHARING REMOTE:
 	(make directory local)
@@ -21,7 +21,7 @@ CREATING LOCAL:
 CREATING REMOTE:
 	(on github, create new repository, copy repository https)
 	git remote add origin https://github.com/billgates/my_repo.git
-	git remove -v # should see a push & pull path defined via https
+	git remote -v # should see a push & pull path defined via https
 
 FIRST TIME ON COMPUTER:
 	git config --global user.name "Johnny Five"
@@ -29,3 +29,19 @@ FIRST TIME ON COMPUTER:
 	git config --global color.ui "auto"
 	git config --global core.editor "nano"
 
+TROUBLESHOOTING:
+	"fatal: you have not cluded your merge (MERGE_HEAD exits)..
+	git merge --abort
+
+TIPS AND TRICKS:
+	ignoring file extensions
+	(navigate to root directory of project)
+	(create / edit .gitignore)
+	list file types in file like:
+		*.log
+		*.gz
+		*.pdf 
+
+MY github URLS:
+	https://github.com/sbow/vim.git	: .vimrc, store /Users/{username}
+	https://github.com/sbow/udacity.git : python scripts, udacity assignment
