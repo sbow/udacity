@@ -49,9 +49,18 @@ MY github URLS:
 AMAZON AWS:
 	Amazon AWS:
 	ssh -i "GPUAWSShaun.pem" ubuntu@ec2-18-221-192-216.us-east-2.compute.amazonaws.com
-	Amazon AWS + VNC - Return command prompt -f, tunnel -L, no show command prompt -N - local 127.0.0.1:5900:
+
+	Amazon AWS + VNC 
 	ssh -i "GPUAWSShaun.pem" -NfL 5901:127.0.0.1:5901  ubuntu@ec2-18-221-192-216.us-east-2.compute.amazonaws.com
-		Insure running, login (above)
-		exicute /etc/init.d/vncserver
-		run netstat -plant, see vncserver listening on 5901
+		- Return command prompt -f, 
+		- tunnel -L, 
+		- no show command prompt -N 
+		- local 127.0.0.1:5900:
+		Insure vncserverrunning, login normally (above)
+		execute /etc/init.d/vncserver
+		run netstat -plant, see on AWS vncserver listening on 5901
+		(Used VNC Viewer, 5901: the local port, :5901 the AWS port)
+		Password: p*e
+		local port - to clear binding: "lsof | grep 5901"; find process, use kill
+
 

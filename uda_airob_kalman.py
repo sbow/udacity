@@ -85,7 +85,7 @@ print [mu, sig]
 # so if you know something about x, it implies something about y
 # Application: for 1D position measurements, invent 2nd dimetion for velocity
 
-# Excersice 25
+# Excersice 25 - Kalman Filter Design
 # Example: if you know a physical relationship like position equals prior
 # position + velocity:  x' = x + x_dot*delta_t
 # you can get the predicted position at the NEXT unobserved timestep by
@@ -107,8 +107,84 @@ print [mu, sig]
 # x,xdot, typically a column vector, Z = (MeasTransFunc)*(x;xdot) 
 #
 # example: new position = old position + vel&deltaT; new velocity = old
-# velocity | state transision matrix = ( 1, 1; 0, 1 ) or x',xdot' = (1, 1;
+# velocity | state transision matrix = F = ( 1, 1; 0, 1 ) or x',xdot' = (1, 1;
 # 0,1)*(x; xdot)
 # measurement Z = old postion only (not velocity, ie: a camera image), the
-# measuremente transision function equals (1, 0) or z = (1,0)*(x;xdot)
+# measuremente transision function = H =  (1, 0) or z = (1,0)*(x;xdot)
 
+#   DEFINITION OF HIGHER DIMENSIONAL KALMAN FILTER IMPLEMENTATION:
+#   UPDATE                              Prediction Function (next state)
+#   x_v = estimate vector [x,xdot]      x_v'  = F*x_v + u
+#   P   = uncertainty covariance          P'  = F*P*transpose(F)
+#   F   = state transision matrix
+#   u   = motion vector
+#   
+#   z   = measurement                     Measurement Update
+#   H   = measrmnt transision function    y = z - H*x_v (where x_v is column vector of state
+#   y   = measrmnt error, diff between          say x_v = [x; xdot]
+#         measurement z and estimate
+#         of what z should be given
+#         esitmate vector & measrmnt
+#         transision function
+#   S   = Matrix measrmnt error           S = H*P*transpose(H) + R 
+#                                             #note H*P*trans(H) maps uncertainty
+#                                             #to measurement space 
+#   R   = measurement noise               K = P*trans(H)*S^-1
+#   K   = Kalman gain                    x' = x + (K*y)
+#   x'  = Updated estimate
+#   P'  = Updated uncertainty            P' = (I - K*H)*P
+#   I   = Identity matrix
+
+
+#   Exercise 28 - Kalman Matrices - Implement kalman filter
+#   Given set of 3 positionestimates, move through each of the 3
+#   Outputing the estimated next position (measurement update) and
+#   The associated uncertainty. Initial uncertainty is set to be very
+#   High for both position & velocity P = [1000, 0; 0, 1000]
+#   State is defined as x_v = [x;x_dot]
+#   State transisionmatrix F = [1, 1; 0,1] row one defines x' = 1*x + 1*x_dot
+#   row two defines x'_dot = 0*x + 1*x_dot (ie: old vel = new vel, estimated)
+#   measurement function H = [1;0] implies measurement is only x (position)
+#   measurement uncertainty R = 1; no uncetainty
+#
+#   USES CLASS "matrix" (matrix.py) : great class for creating / doing matrix
+#   math. Simplified version of numpy. overrides addn / subn / mult; does
+#   transpose ect
+########################################
+
+from uda_matrix import matrix   #uda_matrix.py - contains class matrix
+                                #file name is a "module" in python talk
+
+# Implement the filter function below
+
+def kalman_filter(x, P):
+    for n in range(len(measurements)):
+        
+        # measurement update
+
+        # prediction
+        
+        return x,P
+
+############################################
+### use the code below to test your filter!
+############################################
+
+measurements = [1, 2, 3]
+
+x = matrix([[0.], [0.]]) # initial state (location and velocity)
+P = matrix([[1000., 0.], [0., 1000.]]) # initial uncertainty
+u = matrix([[0.], [0.]]) # external motion
+F = matrix([[1., 1.], [0, 1.]]) # next state function
+H = matrix([[1., 0.]]) # measurement function
+R = matrix([[1.]]) # measurement uncertainty
+I = matrix([[1., 0.], [0., 1.]]) # identity matrix
+
+print('kalman filter:')
+print(kalman_filter(x, P))
+# output should be:
+# x: [[3.9996664447958645], [0.9999998335552873]]
+# P: [[2.3318904241194827, 0.9991676099921091], [0.9991676099921067, 0.49950058263974184]]
+g = matrix([[1.0, 2.0, 3.0], [4., 5., 6.,], [7., 8., 9.]])
+print (g*g)
+print (g.transpose())
