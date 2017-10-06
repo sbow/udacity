@@ -33,7 +33,7 @@ print predict(10., 4., 12., 4.)
 # note: motion here is defined as move to a specific location, not a delta from
 # current location
 # note2: first measurement totaly wipes out huge initial sigma, note:
- # measurement always gives better sigma (variance/stddevsq) than either
+# measurement always gives better sigma (variance/stddevsq) than either
 # prior variance's
 # note3: difference between initial mu & first measurement is error in initial
 # position estimate.
@@ -161,7 +161,7 @@ def kalman_filter(x, P):
     for n in range(len(measurements)):
         
         # measurement update
-
+        z = measurements[n]
         # prediction
         
         return x,P
@@ -188,3 +188,5 @@ print(kalman_filter(x, P))
 g = matrix([[1.0, 2.0, 3.0], [4., 5., 6.,], [7., 8., 9.]])
 print (g*g)
 print (g.transpose())
+print matrix([[1.], [2.]])
+print g.Cholesky()
