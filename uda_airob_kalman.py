@@ -61,7 +61,7 @@ for i in range( len( measurements ) ):
 print [mu, sig]
 
 
-# Excersice 21:
+# Excersice 21: 
 # Kalman filter practical note:
 # in 2D, if you only have position measurements in time
 # the kalman filter can be made to implicitly factor in velocity
@@ -86,6 +86,7 @@ print [mu, sig]
 # Application: for 1D position measurements, invent 2nd dimetion for velocity
 
 # Excersice 25 - Kalman Filter Design
+# Usage Example: observe a bunch of cars, figure out where they are & will be!
 # Example: if you know a physical relationship like position equals prior
 # position + velocity:  x' = x + x_dot*delta_t
 # you can get the predicted position at the NEXT unobserved timestep by
@@ -111,17 +112,21 @@ print [mu, sig]
 # 0,1)*(x; xdot)
 # measurement Z = old postion only (not velocity, ie: a camera image), the
 # measuremente transision function = H =  (1, 0) or z = (1,0)*(x;xdot)
-
+# Note: Measurement noise is embedded inside actual measurement set
 #   DEFINITION OF HIGHER DIMENSIONAL KALMAN FILTER IMPLEMENTATION:
-#   UPDATE                              Prediction Function (next state)
-#   x_v = estimate vector [x,xdot]      x_v'  = F*x_v + u
-#   P   = uncertainty covariance          P'  = F*P*transpose(F)
+#   1) Variables                        3) Prediction Function (next state)
+#   x_v = estimate vector [x;xdot]        x_v(i+1)'= F*x' + u
+#   P   = uncertainty covariance          P(i+1)'= F*P*transpose(F)
 #   F   = state transision matrix
-#   u   = motion vector
-#   
-#   z   = measurement                     Measurement Update
-#   H   = measrmnt transision function    y = z - H*x_v (where x_v is column vector of state
-#   y   = measrmnt error, diff between          say x_v = [x; xdot]
+#   u   = motion vector; allows you
+#         to include a control vector/
+#         command
+#   z   = measurement                   2) Measurement Update
+#   H   = measrmnt transision function    y = z - H*x_v' (where x_v is column vector of state
+#         converts measurement into                       say x_v = [x; xdot]
+#         the x_v coordinates (state
+#         space, in this case [x;xdot])
+#   y   = measrmnt error, diff between         
 #         measurement z and estimate
 #         of what z should be given
 #         esitmate vector & measrmnt
@@ -129,13 +134,28 @@ print [mu, sig]
 #   S   = Matrix measrmnt error           S = H*P*transpose(H) + R 
 #                                             #note H*P*trans(H) maps uncertainty
 #                                             #to measurement space 
-#   R   = measurement noise               K = P*trans(H)*S^-1
-#   K   = Kalman gain                    x' = x + (K*y)
-#   x'  = Updated estimate
-#   P'  = Updated uncertainty            P' = (I - K*H)*P
+#   R   = measurement noise, typically
+#         derived from guess big &        K = P*trans(H)*S^-1  
+#         observe result. Complex to 
+#          determine analyticaly 
+#   K   = Kalman gain                     x' = x_v + (K*y)
+#   x'  = Updated estimate vector
+#   P'  = Updated uncertainty             P' = (I - K*H)*P
 #   I   = Identity matrix
-
-
+#
+#   Algorithm Implementation Steps:
+#       1) Using physics, pick states x, setup state transision matrix F,  initial
+#           estimated state x, open loop motion vector u, measurement function H,
+#           measurement uncertainty R, initial state uncertainty P
+#       2) Measurement Update:
+#           Calculate x' vector, an improvement to openloop guess x_v using Kalman
+#           gain / measurement / uncertainty covariance
+#           Calculate P' which is an improvement to openloop stat uncertainty
+#           matrix using measurement error, kalman gain ect
+#       3) Prediction function:
+#           Guess next state using state transision matrix F, updated estimate
+#           vector x'
+ 
 #   Exercise 28 - Kalman Matrices - Implement kalman filter
 #   Given set of 3 positionestimates, move through each of the 3
 #   Outputing the estimated next position (measurement update) and
@@ -159,12 +179,23 @@ from uda_matrix import matrix   #uda_matrix.py - contains class matrix
 
 def kalman_filter(x, P):
     for n in range(len(measurements)):
-        
-        # measurement update
-        z = measurements[n]
-        # prediction
-        
-        return x,P
+
+        z = measurements[n]             # position estimate, measurement         
+
+        # 2) Measurement Update (Kalman filter)
+        y = matrix([[z]]) - H*x         # y  = measrmnt error
+        S = H*P.transpose() + R*H       # S  = matrix measrmnt error
+        K = P*H.transpose()*(S.Cholesky()).CholeskyInverse()    # kalman gain
+        x = x + (K*y)                   # x' = updated estimate of state [pos;vel]
+        I = matrix([[]])                # I    Instanciate object, empty
+        I.identity(2)                   # I  = identity matrix [1,0;0,1]
+        P = (I - K*H)*P                 # P' = updated est of uncertnty covrnc
+
+        # 3) Prediction Function (next state)
+        x = F*x + u                     # x_v(i+1)' = Predict next timestep state 
+        P = F*P*F.transpose()           # P(i+1)'   = Predict next state uncertainty
+    
+    return x,P # Return final predicted next state x_v(n+1) & uncrtnty P(i+1)'
 
 ############################################
 ### use the code below to test your filter!
@@ -185,8 +216,76 @@ print(kalman_filter(x, P))
 # output should be:
 # x: [[3.9996664447958645], [0.9999998335552873]]
 # P: [[2.3318904241194827, 0.9991676099921091], [0.9991676099921067, 0.49950058263974184]]
-g = matrix([[1.0, 2.0, 3.0], [4., 5., 6.,], [7., 8., 9.]])
-print (g*g)
-print (g.transpose())
-print matrix([[1.], [2.]])
-print g.Cholesky()
+# (END Kalman Filter Excersise)
+
+
+# Kalman Filter Quiz 6: Programing Excercise
+# Now 2 measurement dimensions x,y; and 4 dimensional state vector
+# x,y,xdot,ydot
+# Note: in this case we predict first, then update with measurement
+from uda_matrix import matrix
+########################################
+
+def filter(x, P):
+    for n in range(len(measurements)):
+
+        # prediction
+        x = (F * x) + u
+        P = F * P * F.transpose()
+
+        # measurement update
+        Z = matrix([measurements[n]])
+        y = Z.transpose() - (H * x)
+        S = H * P * H.transpose() + R
+        K = P * H.transpose() * S.inverse()
+        x = x + (K * y)
+        P = (I - (K * H)) * P
+
+    print 'x= '
+    x.show()
+    print 'P= '
+    P.show()
+
+########################################
+
+print "### 4-dimensional example ###"
+
+measurements = [[5., 10.], [6., 8.], [7., 6.], [8., 4.], [9., 2.], [10., 0.]]
+initial_xy = [4., 12.]
+
+# measurements = [[1., 4.], [6., 0.], [11., -4.], [16., -8.]]
+# initial_xy = [-4., 8.]
+
+# measurements = [[1., 17.], [1., 15.], [1., 13.], [1., 11.]]
+# initial_xy = [1., 19.]
+
+dt = 0.1
+
+x = matrix([[initial_xy[0]], [initial_xy[1]], [0.], [0.]]) # initial state (location and velocity)
+u = matrix([[0.], [0.], [0.], [0.]]) # external motion
+
+#### DO NOT MODIFY ANYTHING ABOVE HERE ####
+#### fill this in, remember to use the matrix() function!: ####
+# Note: outputs xdot & ydot need to be multiplied by dt to get into physical
+# units ie: in this example they are 10 times larger than physical (dt=0.1)
+P = matrix([[0., 0.,    0.,    0.], 
+            [0., 0.,    0.,    0.], 
+            [0., 0., 1000.,    0.],
+            [0., 0.,    0., 1000.]]) # initial uncertainty: 0 for positions x and y, 1000 for the two velocities
+                                     # note: do not put 1000 into x,y rows 0,1
+F = matrix([[1., 0., dt, 0.],
+            [0., 1., 0., dt],
+            [0., 0., 1., 0.],
+            [0., 0., 0., 1.]])  # next state function: generalize the 2d version to 4d
+H = matrix([[1., 0., 0., 0.,],
+            [0., 1., 0., 0.]])  # measurement function: reflect the fact that we observe x and y but not the two velocities
+                                # Note: 2x4, multiplied by x & subtracted from
+                                # Z which is 2x1 as in the equation below:
+                                # y = Z.transpose() - (H * x)
+R = matrix([[.1, 0.],[0., .1]]) # measurement uncertainty: use 2x2 matrix with 0.1 as main diagonal
+I = matrix([[]]) 
+I.identity(4)   # 4d identity matrix
+
+###### DO NOT MODIFY ANYTHING HERE #######
+
+filter(x, P)
