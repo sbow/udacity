@@ -41,6 +41,8 @@ TIPS AND TRICKS:
 		*.log
 		*.gz
 		*.pdf 
+	Discard local tracked changes: git checkout .
+	See dif before commit: git diff myfile.txt
 
 MY github URLS:
 	https://github.com/sbow/vim.git	: .vimrc, store /Users/{username}
