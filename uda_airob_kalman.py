@@ -27,7 +27,7 @@ def predict(mean1, var1, mean2, var2):
     new_var = var1 + var2
     return [new_mean, new_var]
 
-print predict(10., 4., 12., 4.)
+# print predict(10., 4., 12., 4.)   # print predict
 
 # quiz 19 - kalman filter code:
 # note: motion here is defined as move to a specific location, not a delta from
@@ -58,7 +58,7 @@ for i in range( len( measurements ) ):
     # note above, motion[i] not motion[i] + mu_meas or motion[i] + mu
     mu = mu_move
     sig = sig_move
-print [mu, sig]
+# print [mu, sig]
 
 
 # Excersice 21: 
