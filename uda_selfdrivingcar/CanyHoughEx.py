@@ -49,14 +49,15 @@ for line in lines:
 
 # Create a "color" binary image to combine with line image
 color_edges = np.dstack((edges, edges, edges)) 
-lines_edges = cv2.addWeighted(color_edges, 0.8, line_image, 1, 0) 
+#lines_edges = cv2.addWeighted(color_edges, 0.8, line_image, 1, 0) 
+lines_edges = cv2.addWeighted(image, 0.8, line_image, 1, 0) 
 
 #########
 # change the figure size
-fig2 = plt.figure(figsize = (15,15)) # create a 5 x 5 figure 
+fig2 = plt.figure(figsize = (12,8)) # create a 5 x 5 figure 
 ax3 = fig2.add_subplot(111)
 ax3.imshow(lines_edges, cmap='Greys_r', aspect='auto')
-ax3.set_title('larger figure')
+ax3.set_title('Lane Detection - Cany Edge Finding and Hough Line Detection')
 
 plt.show()
 
